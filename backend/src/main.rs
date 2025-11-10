@@ -59,10 +59,23 @@ async fn main() -> io::Result<()> {
             // Auth routes
             .service(
                 web::scope("/api/auth")
-                    .route("/register", web::post().to(handlers::register))
-                    .route("/login", web::post().to(handlers::login))
-                    .route("/me", web::get().to(handlers::get_me).wrap(middleware::AuthMiddleware))
-                    .route("/logout", web::post().to(handlers::logout).wrap(middleware::AuthMiddleware))
+                    .route("/register", web::post().to(handlers::auth::register))
+                    .route("/login", web::post().to(handlers::auth::login))
+                    .route("/me", web::get().to(handlers::auth::get_me).wrap(middleware::AuthMiddleware))
+                    .route("/logout", web::post().to(handlers::auth::logout).wrap(middleware::AuthMiddleware))
+            )
+            // Room routes (all protected)
+            .service(
+                web::scope("/api/rooms")
+                    .wrap(middleware::AuthMiddleware)
+                    .route("", web::get().to(handlers::room::list_rooms))
+                    .route("", web::post().to(handlers::room::create_room))
+                    .route("/{id}", web::get().to(handlers::room::get_room))
+                    .route("/{id}", web::put().to(handlers::room::update_room))
+                    .route("/{id}", web::delete().to(handlers::room::delete_room))
+                    .route("/{id}/join", web::post().to(handlers::room::join_room))
+                    .route("/{id}/leave", web::post().to(handlers::room::leave_room))
+                    .route("/{id}/members", web::get().to(handlers::room::get_members))
             )
     })
     .bind(server_address)?
