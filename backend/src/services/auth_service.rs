@@ -11,23 +11,23 @@ pub struct AuthService;
 
 impl AuthService {
     /// Register a new user
-    pub async fn register(
-        pool: &PgPool,
-        config: &Config,
-        dto: CreateUserDto,
-    ) -> Result<AuthResponse, AppError> {
+    pub async fn register(pool: &PgPool, config: &Config, dto: CreateUserDto) -> Result<AuthResponse, AppError> {
         // Validate input
         dto.validate()
-            .map_err(|e| AppError::ValidationError(e.to_string()))?;
+            .map_err(|_| {
+                let mut errors = crate::error::ValidationErrors::new();
+                errors.add_field_error("input", "Invalid input data");
+                AppError::ValidationError(errors)
+            })?;
 
         // Check if email already exists
         if UserRepository::email_exists(pool, &dto.email).await? {
-            return Err(AppError::DuplicateEntry("Email already registered".to_string()));
+            return Err(AppError::EmailExists);
         }
 
         // Check if username already exists
         if UserRepository::username_exists(pool, &dto.username).await? {
-            return Err(AppError::DuplicateEntry("Username already taken".to_string()));
+            return Err(AppError::UsernameExists);
         }
 
         // Hash password
@@ -59,7 +59,11 @@ impl AuthService {
     ) -> Result<AuthResponse, AppError> {
         // Validate input
         dto.validate()
-            .map_err(|e| AppError::ValidationError(e.to_string()))?;
+            .map_err(|_| {
+                let mut errors = crate::error::ValidationErrors::new();
+                errors.add_field_error("input", "Invalid input data");
+                AppError::ValidationError(errors)
+            })?;
 
         // Find user by email
         let user = UserRepository::find_by_email(pool, &dto.email)

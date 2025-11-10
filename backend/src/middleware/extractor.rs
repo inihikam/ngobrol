@@ -10,11 +10,11 @@ impl FromRequest for AuthUser {
     type Error = Error;
     type Future = Ready<Result<Self, Self::Error>>;
 
-    fn from_request(req: &HttpRequest, _: &mut Payload) -> Self::Future {
+    fn from_request(req: &HttpRequest, _payload: &mut actix_web::dev::Payload) -> Self::Future {
         let user_id = req.extensions()
-            .get::<Uuid>()
+            .get::<uuid::Uuid>()
             .copied()
-            .ok_or_else(|| AppError::Unauthorized("User not authenticated".to_string()));
+            .ok_or_else(|| AppError::MissingToken);
 
         ready(user_id.map(AuthUser).map_err(Into::into))
     }

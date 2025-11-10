@@ -48,7 +48,7 @@ where
 
     forward_ready!(service);
 
-    fn call(&self, mut req: ServiceRequest) -> Self::Future {
+    fn call(&self, req: ServiceRequest) -> Self::Future {
         // Get Authorization header
         let auth_header = req.headers().get("Authorization");
 
@@ -70,7 +70,7 @@ where
                 }
             }
             None => {
-                let error = AppError::Unauthorized("No authorization header".to_string());
+                let error = AppError::MissingToken;
                 return Box::pin(async move { Err(error.into()) });
             }
         };
