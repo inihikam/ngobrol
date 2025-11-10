@@ -53,8 +53,17 @@ async fn main() -> io::Result<()> {
             .app_data(web::Data::new(db_pool.clone()))
             .app_data(web::Data::new(redis_client.clone()))
             .app_data(web::Data::new(config.clone()))
+            // Public routes
             .route("/", web::get().to(index))
             .route("/health", web::get().to(health_check))
+            // Auth routes
+            .service(
+                web::scope("/api/auth")
+                    .route("/register", web::post().to(handlers::register))
+                    .route("/login", web::post().to(handlers::login))
+                    .route("/me", web::get().to(handlers::get_me).wrap(middleware::AuthMiddleware))
+                    .route("/logout", web::post().to(handlers::logout).wrap(middleware::AuthMiddleware))
+            )
     })
     .bind(server_address)?
     .run()

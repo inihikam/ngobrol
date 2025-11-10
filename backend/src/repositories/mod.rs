@@ -1,2 +1,3 @@
-// Repositories module - will contain database query layer
-// To be implemented in FASE 3
+pub mod user_repo;
+
+pub use user_repo::UserRepository;

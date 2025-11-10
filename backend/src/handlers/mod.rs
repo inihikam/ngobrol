@@ -1,2 +1,3 @@
-// Handlers module - will contain HTTP request handlers
-// To be implemented in FASE 3
+pub mod auth;
+
+pub use auth::{register, login, get_me, logout};

@@ -1,2 +1,3 @@
-// Models module - will contain database models/structs
-// To be implemented in FASE 3
+pub mod user;
+
+pub use user::{User, CreateUserDto, LoginDto, UpdateUserDto, UserResponse, AuthResponse};

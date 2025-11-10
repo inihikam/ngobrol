@@ -2,6 +2,8 @@
 *.md
 !README.md
 docs/
+*.postman_collection.json
+*.postman_environment.json
 
 # IDE & Editor
 .github

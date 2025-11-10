@@ -1,2 +1,3 @@
-// Services module - will contain business logic layer
-// To be implemented in FASE 3
+pub mod auth_service;
+
+pub use auth_service::AuthService;

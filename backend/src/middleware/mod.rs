@@ -1,2 +1,5 @@
-// Middleware module - will contain auth and rate limiting middleware
-// To be implemented in FASE 3 & FASE 8
+pub mod auth;
+pub mod extractor;
+
+pub use auth::AuthMiddleware;
+pub use extractor::AuthUser;
