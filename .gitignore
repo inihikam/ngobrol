@@ -23,6 +23,7 @@ ehthumbs.db
 Thumbs.db
 
 # Rust / Backend
+backend/migrations/
 backend/target/
 backend/Cargo.lock
 backend/**/*.rs.bk
